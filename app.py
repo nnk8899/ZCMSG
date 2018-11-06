@@ -24,7 +24,7 @@ def do_admin_login():
 @app.route("/logout")
 def logout():
     session['logged_in'] = False
-    return home()
+    return render_template('homepage.html')
 
 
 if __name__ == "__main__":

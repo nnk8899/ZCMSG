@@ -24,6 +24,9 @@ def do_admin_login():
 def menubar():
     return render_template('menubar.html')
 
+@app.route('/prototypeeditor',methods=['GET','POST'])
+def prototypeeditor():
+    return render_template('prototypeeditor.html')
 
 @app.route("/logout")
 def logout():

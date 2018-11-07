@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>模板管理</title>
+</head>
+<style type="text/css">
+    body {background-image: url("http://pic.qiantucdn.com/58pic/19/31/37/91v58PICrAm_1024.jpg");
+    background-size:cover;}
+</style>
+<body>
+<h1>模板管理</h1>
+
+<table class="controllor" border="0" cellspacing="3" cellpadding="0">
+        <tr>
+            <td width="600"></td>
+            <td class="control" id="add"><input type="button" value="新增"></td>
+            <td class="control" id="selectall"><input type="button" value="全选"></td>
+            <td class="control" id="deleteselect"><input type="button" value="删除选中"></td>
+            <td class="control" id="deleteall"><input type="button" value="删除所有"></td>
+        </tr>
+
+<table class="list" width="462" border="0" cellspacing="3" cellpadding="0">
+        <tr>
+            <td width ="66" class="td1"></td>
+          <td width="88" class="td1">模板编号</td>
+          <td width="88" class="td1">模板主题</td>
+          <td width="117" class="td1">模板内容</td>
+          <td width="115" class="td1">备注</td>
+            <td width="120" class="td1"></td>
+            <td width="120" class="td1"></td>
+            <td width="120" class="td1"></td>
+        </tr>
+       <tbody id="proto">
+        <tr id="protoline1">
+            <td><input name="select-item" type="checkbox" value="" /> </td>
+          <td><input type="text" name="num" value="1">
+          <td><input type="text" name="theme" value="催收"></td>
+          <td><input type="text" name="contains" value="还钱！"></td>
+          <td><input type="text" name="details" value="简单粗暴"></td>
+            <td><input id="view" type="button" value="查看"></input></td>
+            <td><input id="edit" type="button" value="编辑"></input></td>
+            <td><input id="delete" type="button" value="删除"></input></td>
+        </tr>
+       </tbody>
+</table>
+
+
+
+</body>
+</html>

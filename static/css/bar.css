@@ -1,0 +1,6 @@
+ul {list-style-type:none;cursor: pointer;}
+li {line-height:50px;width:200px;}
+#title {line-height:50px;width:180px;height:100px;}
+a {text-decoration: none;color:white;font-weight:900;font-size:30px;}
+#item:hover{background-color: rgba(0,0,0,.2);}
+body {background-image:url('/static/img/barbackground.jpg');}

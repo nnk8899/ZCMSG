@@ -1,5 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 import os
+import pymssql
 
 app = Flask(__name__)
 
@@ -26,7 +27,13 @@ def menubar():
 
 @app.route('/prototypeeditor',methods=['GET','POST'])
 def prototypeeditor():
-    return render_template('prototypeeditor.html')
+    conn = pymssql.connect(host='LAPTOP-GPKFSA00', user='sa', password='xyt555', database='msg',charset='cp936')
+    cur = conn.cursor()
+    sql = "select * from [dbo].[prototype]"
+    cur.execute(sql)
+    u = cur.fetchall()
+    conn.close()
+    return render_template('prototypeeditor.html',u=u)
 
 @app.route("/logout")
 def logout():

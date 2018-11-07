@@ -1,7 +1,7 @@
 create table prototype
 (
 num int,
-theme varchar,
-contain varchar,
-details varchar
+theme varchar(max),
+contain text,
+details varchar(max)
 )

@@ -12,35 +12,37 @@
 
 <table class="controllor" border="0" cellspacing="3" cellpadding="0">
         <tr>
-            <td width="600"></td>
+            <td width="700"></td>
             <td class="control" id="add"><input type="button" value="新增"></td>
             <td class="control" id="selectall"><input type="button" value="全选"></td>
             <td class="control" id="deleteselect"><input type="button" value="删除选中"></td>
             <td class="control" id="deleteall"><input type="button" value="删除所有"></td>
         </tr>
 
-<table class="list" width="462" border="0" cellspacing="3" cellpadding="0">
+<table class="list" width="900" border="0" cellspacing="3" cellpadding="0">
         <tr>
-            <td width ="66" class="td1"></td>
-          <td width="88" class="td1">模板编号</td>
-          <td width="88" class="td1">模板主题</td>
-          <td width="117" class="td1">模板内容</td>
-          <td width="115" class="td1">备注</td>
-            <td width="120" class="td1"></td>
-            <td width="120" class="td1"></td>
-            <td width="120" class="td1"></td>
+            <td width ="66" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)"></td>
+          <td width="88" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板编号</td>
+          <td width="188" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板主题</td>
+          <td width="312" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板内容</td>
+          <td width="212" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">备注</td>
+            <td class="td1"></td>
+            <td class="td1"></td>
+            <td class="td1"></td>
         </tr>
        <tbody id="proto">
+       {% for i in u %}
         <tr id="protoline1">
-            <td><input name="select-item" type="checkbox" value="" /> </td>
-          <td><input type="text" name="num" value="1">
-          <td><input type="text" name="theme" value="催收"></td>
-          <td><input type="text" name="contains" value="还钱！"></td>
-          <td><input type="text" name="details" value="简单粗暴"></td>
-            <td><input id="view" type="button" value="查看"></input></td>
-            <td><input id="edit" type="button" value="编辑"></input></td>
-            <td><input id="delete" type="button" value="删除"></input></td>
+            <td width ="66" class="td2"><input name="select-item" type="checkbox" value="" /> </td>
+            <td width ="88" class="td2">{{ i[0] }}</td>
+            <td width ="88" class="td2">{{ i[1] }}</td>
+            <td width ="112" class="td2">{{ i[2] }}</td>
+            <td width ="112" class="td2">{{ i[3] }}</td>
+            <td class="td2"><input id="view" type="button" value="查看"></input></td>
+            <td class="td2"><input id="edit" type="button" value="编辑"></input></td>
+            <td class="td2"><input id="delete" type="button" value="删除"></input></td>
         </tr>
+       {% endfor %}
        </tbody>
 </table>
 

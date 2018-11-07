@@ -20,6 +20,10 @@ def do_admin_login():
         flash('wrong password!')
     return home()
 
+@app.route('/menubar',methods=['GET','POST'])
+def menubar():
+    return render_template('menubar.html')
+
 
 @app.route("/logout")
 def logout():

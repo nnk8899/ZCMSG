@@ -14,7 +14,7 @@ def get_logger(name):
     else:
         os.mkdir(LOG_PATH)
     # 指定logger输出格式
-    formatter = logging.Formatter('%(asctime)s %(levelname)-8s: %(message)s')
+    formatter = logging.Formatter('[%(asctime)s] %(levelname)s [%(funcName)s: %(filename)s, %(lineno)d] %(message)s')
     # 文件日志
     file_handler = logging.FileHandler("%s/%s" % (LOG_PATH, LOG_FILE))
     file_handler.setFormatter(formatter)  # 可以通过setFormatter指定输出格式

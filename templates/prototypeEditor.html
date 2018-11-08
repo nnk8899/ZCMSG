@@ -15,7 +15,7 @@
         }
 
         function checkAll(name){
-        var el = document.getElementByTagName('input');
+        var el = document.getElementsByTagName('input');
         var len = el.length;
         for(var i=0;i<len;i++){
         if((el[i].type=="checkbox")&&(el[i].name==name)){
@@ -24,7 +24,7 @@
         }
 
         function clearAll(name){
-        var el = document.getElementByTagName('input');
+        var el = document.getElementsByTagName('input');
         var len = el.length;
         for(var i=0;i<len;i++){
         if((el[i].type=="checkbox")&&(el[i].name==name)){
@@ -47,7 +47,7 @@
 
 <table class="list" width="1100" border="0" cellspacing="3" cellpadding="0">
         <tr>
-            <td width ="66" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)"><input name="selectall" id="checkOrCancelAll" type="checkbox" value="" onClick="if(this.checked==true) { checkAll('select-item'); } else { clearAll('select-item'); }"></td>
+            <td width ="66" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)"><input name="selectall" id="checkOrCancelAll" type="checkbox" onClick="if(this.checked==true) { checkAll('select-item'); } else { clearAll('select-item'); }"></td>
           <td width="88" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板编号</td>
           <td width="188" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板主题</td>
           <td width="312" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板内容</td>

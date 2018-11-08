@@ -1,12 +1,15 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 import os
 import pymssql
+import sys_logger
 
 app = Flask(__name__)
+logger = sys_logger.get_logger(__name__)
 
 
 @app.route('/')
 def home():
+    logger.debug("Index page.")
     if not session.get('logged_in'):
         return render_template('login.html')
     else:

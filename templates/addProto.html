@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>模板管理</title>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <link href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style type="text/css">
+    body {background-image: url("http://pic.qiantucdn.com/58pic/19/31/37/91v58PICrAm_1024.jpg");
+    background-size:cover;}
+</style>
+<body>
+
+{% from "_field.html" import render_field %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+<h1>模板管理</h1>
+<div class="add-proto" align="center" style="width:1000px;height:600px;filter:Alpha(opacity=30)" height="500">
+    <form  name="addProto" role="form" method="POST" action="" enctype="multipart/form-data">
+
+    <h2>新增模板</h2>
+</br>
+    {{ render_field(form.add_num) }}
+    {{ render_field(form.add_theme) }}
+    {{ render_field(form.add_contains) }}
+    {{ render_field(form.add_details) }}
+</br></br></br></br>
+{{ render_field(form.add_submit) }}
+</br>
+ </form>
+</div>
+
+</body>

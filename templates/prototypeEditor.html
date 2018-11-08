@@ -2,6 +2,8 @@
 <head>
     <meta charset="UTF-8">
     <title>模板管理</title>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <link href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <style type="text/css">
     body {background-image: url("http://pic.qiantucdn.com/58pic/19/31/37/91v58PICrAm_1024.jpg");
@@ -32,17 +34,19 @@
         }
         }
 
+
+
 </script>
 
 <body>
-<h1>模板管理</h1>
+
 
 <table class="controllor" border="0" cellspacing="3" cellpadding="0">
         <tr>
             <td width="880"></td>
-            <td class="control" id="add"><input type="button" value="新增"></td>
-            <td class="control" id="deleteselect"><input type="button" value="删除选中"></td>
-            <td class="control" id="deleteall"><input type="button" value="删除所有"></td>
+            <td class="control" id="add"><input id="add" type="button" value="新增" onclick="window.location.href='http://localhost:9000/addProto'"></td>
+            <td class="control" id="delete-select"><input id="delete-select" type="button" value="删除选中"></td>
+            <td class="control" id="delete-all"><input id="delete-all" type="button" value="删除所有"></td>
         </tr>
 
 <table class="list" width="1100" border="0" cellspacing="3" cellpadding="0">

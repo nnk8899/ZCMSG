@@ -21,24 +21,27 @@ def do_admin_login():
         flash('wrong password!')
     return home()
 
-@app.route('/menubar',methods=['GET','POST'])
-def menubar():
-    return render_template('menubar.html')
 
-@app.route('/prototypeeditor',methods=['GET','POST'])
-def prototypeeditor():
-    conn = pymssql.connect(host='LAPTOP-GPKFSA00', user='sa', password='xyt555', database='msg',charset='cp936')
+@app.route('/menuBar', methods=['GET', 'POST'])
+def menu_bar():
+    return render_template('menuBar.html')
+
+
+@app.route('/prototypeEditor', methods=['GET', 'POST'])
+def prototype_editor():
+    conn = pymssql.connect(host='LAPTOP-GPKFSA00', user='sa', password='xyt555', database='msg', charset='cp936')
     cur = conn.cursor()
     sql = "select * from [dbo].[prototype]"
     cur.execute(sql)
     u = cur.fetchall()
     conn.close()
-    return render_template('prototypeeditor.html',u=u)
+    return render_template('prototypeEditor.html', u=u)
+
 
 @app.route("/logout")
 def logout():
     session['logged_in'] = False
-    return render_template('homepage.html')
+    return render_template('homePage.html')
 
 
 if __name__ == "__main__":

@@ -26,6 +26,10 @@ class editForm(FlaskForm):
     edit_submit = SubmitField(u'提交')
 
 
+class deleteForm(FlaskForm):
+    delete_check = SubmitField(u'确认删除')
+
+
 def link_sql():
     host = 'LAPTOP-GPKFSA00'
     user = 'sa'
@@ -126,6 +130,21 @@ def editProto(id):
     form.edit_details.data = l[0][3]
     return render_template('editProto.html', form=form, id=id)
 
+
+@app.route('/deleteProto/<id>', methods=['GET','POST'])
+def deleteProto(id):
+    CSRF_ENABLED = True
+    app.config["SECRET_KEY"] = "123456"
+    form = deleteForm(request.form)
+    if request.method == 'POST' and form.validate():
+        conn = link_sql()
+        cursor3 = conn.cursor()
+        sql3 = 'delete from [dbo].[prototype] where num = ' + to_standard(id)
+        cursor3.execute(sql3)
+        conn.commit()
+        conn.close()
+        return redirect('http://localhost:9000/prototypeEditor')
+    return render_template('deleteProto.html', form=form, id=id)
 
 
 @app.route("/logout")

@@ -44,6 +44,16 @@
         });
         var vals = arr.join(",");
         console.log(vals);
+        var data = JSON.stringify({"checkedItem": vals})
+        console.log(data)
+
+        $.ajax({
+            url: "/deleteChecked",
+            type: "POST",
+            data: data
+        });
+        window.location.reload();
+
         });
         });
 

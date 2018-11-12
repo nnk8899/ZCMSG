@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, session, abort
+from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
 from wtforms import BooleanField, StringField, PasswordField, SelectField, RadioField, SubmitField, IntegerField, TextAreaField, validators
 from wtforms.validators import Length, DataRequired
 from flask_wtf import Form,FlaskForm
@@ -10,6 +10,7 @@ import os
 import pymssql
 import sys_logger
 import sys_util
+import json
 
 
 class addForm(FlaskForm):
@@ -149,6 +150,24 @@ def deleteProto(id):
         conn.close()
         return redirect('http://localhost:9000/prototypeEditor')
     return render_template('deleteProto.html', form=form, id=id)
+
+
+@app.route('/deleteChecked', methods=['POST'])
+def deleteChecked():
+    data = json.loads(request.get_data('data').decode('utf8'))
+    checkedItem = data["checkedItem"]
+    conn = link_sql()
+    cursor4 = conn.cursor()
+    sql4 = 'delete from [dbo].[prototype] where id in(' + str(checkedItem) + ')'
+    cursor4.execute(sql4)
+    conn.commit()
+    conn.close()
+    info = dict()
+    info['checkedItem'] = checkedItem
+    return jsonify(info)
+
+
+
 
 
 @app.route("/logout")

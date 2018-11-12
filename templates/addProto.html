@@ -10,8 +10,8 @@
     body {background-image: url("http://pic.qiantucdn.com/58pic/19/31/37/91v58PICrAm_1024.jpg");
     background-size:cover;}
     input {width:500px;}
-    textarea#add_contains {width:500px; height:200px;}
-    textarea#add_details {width:500px; height:100px;}
+    textarea#add_content {width:500px; height:200px;}
+    textarea#add_comment {width:500px; height:100px;}
 </style>
 <body>
 
@@ -24,10 +24,10 @@
 
 
 </br>
-    {{ render_field(form.add_num) }}
-    {{ render_field(form.add_theme) }}
-    {{ render_field(form.add_contains) }}
-    {{ render_field(form.add_details) }}
+    {{ render_field(form.add_name) }}
+    {{ render_field(form.add_type) }}
+    {{ render_field(form.add_content) }}
+    {{ render_field(form.add_comment) }}
 
 {{ render_field(form.add_submit) }}
         {{ form.csrf_token }}

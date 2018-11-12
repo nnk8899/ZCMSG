@@ -36,7 +36,16 @@
         }
         }
 
-
+        $(document).ready(function(){
+        $("input#delete-select").click(function(){
+        var arr = new Array();
+        $(".select-items:checked").each(function(i){
+            arr[i] = $(this).attr("id");
+        });
+        var vals = arr.join(",");
+        console.log(vals);
+        });
+        });
 
 </script>
 
@@ -54,7 +63,7 @@
 <table class="list" width="1100" border="0" cellspacing="3" cellpadding="0">
         <tr>
             <td width ="66" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)"><input name="selectall" id="checkOrCancelAll" type="checkbox" onClick="if(this.checked==true) { checkAll('select-item'); } else { clearAll('select-item'); }" /></td>
-          <td width="88" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板编号</td>
+          <td width="88" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板名称</td>
           <td width="188" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板主题</td>
           <td width="312" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板内容</td>
           <td width="212" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">备注</td>
@@ -65,11 +74,11 @@
        <tbody id="proto">
        {% for i in u %}
         <tr id="protoline1">
-            <td width ="66" class="td2"><input name="select-item" type="checkbox" value="" /> </td>
-            <td width ="88" class="td2">{{ i[0] }}</td>
+            <td width ="66" class="td2"><input id={{ i[0] }} class="select-items" name="select-item" type="checkbox" value="" /> </td>
             <td width ="88" class="td2">{{ i[1] }}</td>
-            <td width ="112" class="td2">{{ i[2] }}</td>
+            <td width ="88" class="td2">{{ i[2] }}</td>
             <td width ="112" class="td2">{{ i[3] }}</td>
+            <td width ="112" class="td2">{{ i[4] }}</td>
             <td class="td2"><input id="view" name="getTableContent" type="button" value="查看" onclick="getTableContent(this)" /></td>
             <td class="td2"><a href="{{ url_for('editProto',id=i[0]) }}"><input id="edit" type="button" value="编辑" /></a></td>
             <td class="td2"><a href="{{ url_for('deleteProto',id=i[0]) }}"><input id="delete" type="button" value="删除" /></a></td>

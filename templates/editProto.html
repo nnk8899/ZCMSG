@@ -10,8 +10,8 @@
     body {background-image: url("http://pic.qiantucdn.com/58pic/19/31/37/91v58PICrAm_1024.jpg");
     background-size:cover;}
     input {width:500px;}
-    textarea#edit_contains {width:500px; height:200px;}
-    textarea#edit_details {width:500px; height:100px;}
+    textarea#edit_content {width:500px; height:200px;}
+    textarea#edit_comment {width:500px; height:100px;}
 </style>
 <body>
 
@@ -19,15 +19,16 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 <h1>模板修改</h1>
-<h2>模板编号：{{ id }}</h2>
+
 <div class="edit-proto" align="center" style="width:1000px;height:600px;filter:Alpha(opacity=30)" height="500">
     <form  name="addProto" role="form" method="POST" action="" enctype="multipart/form-data">
 
 
 </br>
-    {{ render_field(form.edit_theme) }}
-    {{ render_field(form.edit_contains) }}
-    {{ render_field(form.edit_details) }}
+        {{ render_field(form.edit_name) }}
+    {{ render_field(form.edit_type) }}
+    {{ render_field(form.edit_content) }}
+    {{ render_field(form.edit_comment) }}
 
 {{ render_field(form.edit_submit) }}
         {{ form.csrf_token }}

@@ -13,17 +13,18 @@ import sys_util
 
 
 class addForm(FlaskForm):
-    add_num = IntegerField(u'*模板编号',validators = [DataRequired()])
-    add_theme = StringField(u'*模板主题',validators = [DataRequired()])
-    add_contains = TextAreaField(u'*模板内容', validators=[DataRequired()])
-    add_details = TextAreaField	(u'备注')
+    add_name = StringField(u'*模板名称',validators = [DataRequired()])
+    add_type = StringField(u'*模板主题', validators=[DataRequired()])
+    add_content = TextAreaField(u'*模板内容', validators=[DataRequired()])
+    add_comment = TextAreaField	(u'备注')
     add_submit = SubmitField(u'提交')
 
 
 class editForm(FlaskForm):
-    edit_theme = StringField(u'*模板主题',validators = [DataRequired()], default="XX")
-    edit_contains = TextAreaField(u'*模板内容', validators=[DataRequired()])
-    edit_details = TextAreaField	(u'备注')
+    edit_name = StringField(u'*模板名称', validators=[DataRequired()])
+    edit_type = StringField(u'*模板主题', validators=[DataRequired()])
+    edit_content = TextAreaField(u'*模板内容', validators=[DataRequired()])
+    edit_comment = TextAreaField	(u'备注')
     edit_submit = SubmitField(u'提交')
 
 
@@ -32,7 +33,7 @@ class deleteForm(FlaskForm):
 
 
 def link_sql():
-    c = sys_util.get_sql_config()
+    c = sys_util.get_sql_config("config/SQLConfig.config")
     # database, _host, _port, _user, _pwd
     host = c[1]
     user = c[3]
@@ -81,7 +82,7 @@ def menu_bar():
 def prototype_editor():
     conn = link_sql()
     cur = conn.cursor()
-    sql = "select * from [dbo].[prototype] order by num asc"
+    sql = "select * from [dbo].[prototype] order by id asc"
     cur.execute(sql)
     u = cur.fetchall()
     conn.close()
@@ -96,7 +97,7 @@ def add_prototype():
     if request.method == 'POST' and form.validate():
         conn = link_sql()
         cursor1 = conn.cursor()
-        sql1 = 'insert into [dbo].[prototype] values(' + to_standard(form.add_num.data) + ',' + to_standard(form.add_theme.data) + ',' + to_standard(form.add_contains.data) + ',' + to_standard(form.add_details.data) + ')'
+        sql1 = 'insert into [dbo].[prototype] (name,content,comment) values(' + to_standard(form.add_name.data) + ',' + to_standard(form.add_content.data) + ',' + to_standard(form.add_comment.data) + ')'
         cursor1.execute(sql1)
         conn.commit()
         conn.close()
@@ -108,7 +109,7 @@ def add_prototype():
 def editProto(id):
     conn = link_sql()
     cur = conn.cursor()
-    sql = "select * from [dbo].[prototype] where num=" + to_standard(id)
+    sql = "select * from [dbo].[prototype] where id=" + to_standard(id)
     cur.execute(sql)
     l = cur.fetchall()
     conn.close()
@@ -116,19 +117,21 @@ def editProto(id):
     app.config["SECRET_KEY"] = "87654321"
     form = editForm(request.form)
     if request.method == 'POST' and form.validate():
-        curr_theme = form.edit_theme.data
-        curr_contains = form.edit_contains.data
-        curr_details = form.edit_details.data
+        curr_name = form.edit_name.data
+        curr_type = form.edit_type.data
+        curr_content = form.edit_content.data
+        curr_comment = form.edit_comment.data
         conn = link_sql()
         cursor2 = conn.cursor()
-        sql2 = 'update [dbo].[prototype] set theme=' + to_standard(curr_theme) + ',contain=' + to_standard(curr_contains) + ',details=' + to_standard(curr_details) + 'where num = ' + to_standard(id)
+        sql2 = 'update [dbo].[prototype] set name=' + to_standard(curr_name) + ',content=' + to_standard(curr_content) + ',comment=' + to_standard(curr_comment) + 'where id = ' + to_standard(id)
         cursor2.execute(sql2)
         conn.commit()
         conn.close()
         return redirect('http://localhost:9000/prototypeEditor')
-    form.edit_theme.data = l[0][1]
-    form.edit_contains.data = l[0][2]
-    form.edit_details.data = l[0][3]
+    form.edit_name.data = l[0][1]
+    form.edit_type.data =l[0][2]
+    form.edit_content.data = l[0][3]
+    form.edit_comment.data = l[0][4]
     return render_template('editProto.html', form=form, id=id)
 
 
@@ -140,7 +143,7 @@ def deleteProto(id):
     if request.method == 'POST' and form.validate():
         conn = link_sql()
         cursor3 = conn.cursor()
-        sql3 = 'delete from [dbo].[prototype] where num = ' + to_standard(id)
+        sql3 = 'delete from [dbo].[prototype] where id = ' + to_standard(id)
         cursor3.execute(sql3)
         conn.commit()
         conn.close()

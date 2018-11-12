@@ -9,6 +9,7 @@ from flask_admin.form import widgets
 import os
 import pymssql
 import sys_logger
+import sys_util
 
 
 class addForm(FlaskForm):
@@ -31,19 +32,19 @@ class deleteForm(FlaskForm):
 
 
 def link_sql():
-    host = 'LAPTOP-GPKFSA00'
-    user = 'sa'
-    password = 'xyt555'
-    database = 'msg'
+    c = sys_util.get_sql_config()
+    # database, _host, _port, _user, _pwd
+    host = c[1]
+    user = c[3]
+    password = c[4]
+    database = c[0]
     conn = pymssql.connect(host, user, password, database, charset='cp936')
     return conn
 
 
 def to_standard(var):
-	standard_var = "'"+str(var)+"'"
-	return standard_var
-
-
+    standard_var = "'"+str(var)+"'"
+    return standard_var
 
 
 

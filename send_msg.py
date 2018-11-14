@@ -46,4 +46,4 @@ def send_msg(content, mobile):
 if __name__ == '__main__':
     content = "【中新水滴】欢迎使用水滴金融，贵公司的领取码为 1005,此领取码用于注册水滴供应链金融移动端账号。点击 点击 https://api.scf.chinaftg.com/img/qr.jpg 进行扫 进行扫码注册。"
     mobile = "18084800975"
-    status = send_msg(content, mobile)
+    #status = send_msg(content, mobile)

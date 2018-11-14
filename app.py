@@ -1,17 +1,22 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort, jsonify
+from werkzeug.utils import secure_filename
 from wtforms import BooleanField, StringField, PasswordField, SelectField, RadioField, SubmitField, IntegerField, TextAreaField, validators
 from wtforms.validators import Length, DataRequired
 from flask_wtf import Form,FlaskForm
 from flask_wtf.file import FileField,FileAllowed,FileRequired
 from flask_bootstrap import Bootstrap
-from flask_script import Manager
-from flask_admin.form import widgets
+
+
+
+
 
 import os
 import pymssql
 import sys_logger
 import sys_util
 import json
+import collections
+import time
 
 
 class addForm(FlaskForm):
@@ -31,7 +36,9 @@ class editForm(FlaskForm):
 
 
 class excelForm(FlaskForm):
-    excel_upload = FileField('上传excel文件', validators=[FileAllowed(['xls', 'xlsx'], 'Excel ONLY!')])
+    file = FileField('上传excel文件', validators=[FileRequired(), FileAllowed(['csv'], 'Excel ONLY!')])
+    proto_name = SelectField(u'选择模板', coerce=int, validators=[DataRequired(message=u"模板名称不能为空")])
+    excel_submit = SubmitField(u'立即发送')
 
 
 class deleteForm(FlaskForm):
@@ -174,11 +181,56 @@ def deleteChecked():
 
 @app.route("/msgGroup", methods=['POST','GET'])
 def msgGroup():
-    CSRF_ENABLED = True
-    app.config["SECRET_KEY"] = "654321"
-    form = excelForm(request.form)
-    if request.method == 'POST' and form.validate():
-        return render_template('msgGroup.html', form=form)
+    conn = link_sql()
+    cur = conn.cursor()
+    sql = "select id,name from [dbo].[prototype] order by id asc"
+    cur.execute(sql)
+    l = cur.fetchall()
+    conn.close()
+    form = excelForm()
+    form.proto_name.choices = [(i[0],i[1]) for i in l]
+    if request.method == 'POST':
+        filename = form.file.data.filename
+        print(filename)
+        form.file.data.save('D:/msg_box/' + filename)
+        conn1 = link_sql()
+        cur1 = conn1.cursor()
+        sql1 = "select content from [dbo].[prototype] where id=" + to_standard(form.proto_name.data)
+        cur1.execute(sql1)
+        k = cur1.fetchall()
+        conn1.close()
+        #计算模板中的占位符个数
+        proto_var_num = collections.Counter(k[0][0]).['$']/2
+        #pandas读取上传的文件
+        time.sleep(5)
+        df = pd.read_csv('D://msg_box/'+filename, encoding='gbk', header=None)
+        #判断上传的文件中的变量个数是否等于模板中占位符个数
+        if (df.shape[1]-1) == proto_var_num:
+            '''
+            执行发送短信操作,并返回响应码
+            '''
+            '''
+            自动生成批次：
+                查询当日所有记录
+                    if 记录存在:
+                        set 当前批次值 = 当日记录中批次值的最大值+1 
+                    else:
+                        set 当前批次值 = 1
+            '''
+            '''
+            向数据库表插值
+            '''
+            '''
+            flash('已发送完毕！请到XXX处查询发送结果！')
+            '''
+        else:
+            '''
+            flash('模板与文件不匹配，请刷新页面后重新上传！')
+            '''
+
+
+
+        return redirect('/prototypeEditor')
     return render_template('msgGroup.html',form=form)
 
 

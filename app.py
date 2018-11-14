@@ -2,6 +2,7 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from wtforms import BooleanField, StringField, PasswordField, SelectField, RadioField, SubmitField, IntegerField, TextAreaField, validators
 from wtforms.validators import Length, DataRequired
 from flask_wtf import Form,FlaskForm
+from flask_wtf.file import FileField,FileAllowed,FileRequired
 from flask_bootstrap import Bootstrap
 from flask_script import Manager
 from flask_admin.form import widgets
@@ -27,6 +28,10 @@ class editForm(FlaskForm):
     edit_content = TextAreaField(u'*模板内容', validators=[DataRequired()])
     edit_comment = TextAreaField	(u'备注')
     edit_submit = SubmitField(u'提交')
+
+
+class excelForm(FlaskForm):
+    excel_upload = FileField('上传excel文件', validators=[FileAllowed(['xls', 'xlsx'], 'Excel ONLY!')])
 
 
 class deleteForm(FlaskForm):
@@ -167,7 +172,14 @@ def deleteChecked():
     return jsonify(info)
 
 
-
+@app.route("/msgGroup", methods=['POST','GET'])
+def msgGroup():
+    CSRF_ENABLED = True
+    app.config["SECRET_KEY"] = "654321"
+    form = excelForm(request.form)
+    if request.method == 'POST' and form.validate():
+        return render_template('msgGroup.html', form=form)
+    return render_template('msgGroup.html',form=form)
 
 
 @app.route("/logout")

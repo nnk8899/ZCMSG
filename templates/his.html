@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>历史消息</title>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <link href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style type="text/css">
+    body {background-image: url("http://pic.qiantucdn.com/58pic/19/31/37/91v58PICrAm_1024.jpg");
+    background-size:cover;}
+
+
+</style>
+
+<body>
+
+
+<h1>历史消息</h1>
+<table class="list" width="1100" border="0" cellspacing="3" cellpadding="0">
+        <tr>
+            <td width ="312" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">手机号码</td>
+          <td width="188" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">模板名称</td>
+          <td width="212" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">发信时间</td>
+          <td width="66" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">当日批次</td>
+          <td width="88" class="td1" style="background-color:#F5F5F5;filter:Alpha(opacity=80)">发送结果</td>
+        </tr>
+       <tbody id="his">
+       {% for i in u %}
+        <tr id="protoline1">
+            <td width ="312" class="td2">{{ i[0] }}</td>
+            <td width ="188" class="td2">{{ i[1] }}</td>
+            <td width ="212" class="td2">{{ i[2] }}</td>
+            <td width ="66" class="td2">{{ i[3] }}</td>
+            <td width ="88" class="td2">{{ i[4] }}</td>
+        </tr>
+       {% endfor %}
+       </tbody>
+</table>
+
+
+
+</body>
+</html>

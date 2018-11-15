@@ -2,6 +2,7 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from werkzeug.utils import secure_filename
 from wtforms import BooleanField, StringField, PasswordField, SelectField, RadioField, SubmitField, IntegerField, TextAreaField, validators
 from wtforms.validators import Length, DataRequired
+from wtforms.fields.html5 import DateField
 from flask_wtf import Form,FlaskForm
 from flask_wtf.file import FileField,FileAllowed,FileRequired
 from flask_bootstrap import Bootstrap
@@ -18,6 +19,7 @@ import json
 import collections
 import time
 import send_msg
+import pandas as pd
 
 
 class addForm(FlaskForm):
@@ -44,6 +46,16 @@ class excelForm(FlaskForm):
 
 class deleteForm(FlaskForm):
     delete_check = SubmitField(u'确认删除')
+
+
+class historyForm(FlaskForm):
+    his_tel = StringField(u'手机号')
+    his_proto_id = SelectField(u'模板名称', coerce=int)
+    his_date = DateField(u'上传时间')
+    his_batches = StringField(u'当日批次')
+    his_status = IntegerField(u'状态码')#可考虑增设table状态码制成下拉框
+    his_submit = SubmitField(u'查询')
+
 
 
 def link_sql():
@@ -212,10 +224,10 @@ def msgGroup():
         k = cur1.fetchall()
         conn1.close()
         #计算模板中的占位符个数
-        proto_var_num = int((collections.Counter(k[0][0])['$'])/2)
+        proto_var_num = int(collections.Counter(k[0][0])['{'])
         proto_text = k[0][0]
         #pandas读取上传的文件
-        time.sleep(5)
+        time.sleep(20)
         df = pd.read_csv('D://msg_box/'+filename, encoding='gbk', header=None)
         #判断上传的文件中的变量个数是否等于模板中占位符个数
         if (df.shape[1]-1) == proto_var_num:
@@ -223,33 +235,96 @@ def msgGroup():
             for index,row in df.iterrows():
                 curr_proto_text = proto_text
                 for i in range(1, proto_var_num+1):
-                    old = '$' + str(i) + '$'
+                    old = '{' + str(i) + '}'
                     curr_proto_text = curr_proto_text.replace(old, str(row[i]))
-                status = send_msg.send_msg(content=curr_proto_text, mobile=str(row[0]))
+                status = send_msg.send_msg(content=curr_proto_text, mobile=str(int(row[0])))
                 #向数据库中插值
                 conn11 = link_sql()
                 cur11 = conn11.cursor()
+                sq = 'insert into [dbo].[upload_details] (tel,proto_id,batches,status'
                 for j in range(1, proto_var_num + 1):
-                    ss = ss + ',field' + str(j)
-                ss = ss + ') values (' +  to_standard(row[0]) + ',' + str(form.proto_name.data) + ',' + str(curr_batches) + ',' + str(status)
+                    sq = sq + ',field' + str(j)
+                sq = sq + ') values (' + to_standard((int(row[0]))) + ',' + str(form.proto_name.data) + ',' + str(curr_batches) + ',' + str(status)
                 for j in range(1, proto_var_num + 1):
-                    ss = ss + ',' + to_standard(row[j])
-                ss = ss + ')'
-                cur11.execute(ss)
+                    sq = sq + ',' + to_standard(row[j])
+                sq = sq + ')'
+                print(sq)
+                cur11.execute(sq)
+                conn11.commit()
                 conn11.close()
-
-            '''
-            flash('已发送完毕！请到XXX处查询发送结果！')
-            '''
+            print("发送成功")
+            return redirect('/history')
         else:
-            '''
-            flash('模板与文件不匹配，请刷新页面后重新上传！')
-            '''
-
-
-
-        return redirect('/prototypeEditor')
+            return redirect('/msgGroup')
     return render_template('msgGroup.html', form=form, curr_batches=curr_batches)
+
+
+@app.route("/history", methods=['POST','GET'])
+def history():
+    conn = link_sql()
+    cur = conn.cursor()
+    sql = "select id,name from [dbo].[prototype] order by id asc"
+    cur.execute(sql)
+    l = cur.fetchall()
+    conn.close()
+    tuple = (0, '不选择')
+    l = l + [tuple]
+    form = historyForm()
+    form.his_proto_id.choices = [(i[0], i[1]) for i in l]
+    #print(type(form.his_proto_id.choices[0]))
+    if request.method == 'POST':
+        if str(form.his_tel.data) == '':
+            tel = 'None'
+        else:
+            tel = str(form.his_tel.data)
+        if str(form.his_proto_id.data) == str(0):
+            id = 'None'
+        else:
+            id = str(form.his_proto_id.data)
+        if str(form.his_batches.data) == '':
+            batches = 'None'
+        else:
+            batches = str(form.his_batches.data)
+        date = str(form.his_date.data)
+        status = str(form.his_status.data)
+        url = '/his/'+ str(tel) + '/' + str(id) + '/' + str(date) + '/' + str(batches) + '/' + str(status)
+        print(url)
+        return redirect(url)
+    return render_template('history.html', form=form)
+
+
+@app.route('/his/<tel>/<id>/<date>/<batches>/<status>', methods=['GET','POST'])
+def his(tel, id, date, batches, status):
+    conn = link_sql()
+    cur = conn.cursor()
+    sql = "select tel,proto_id,create_time,batches,status from [dbo].[upload_details] where 1=1 "
+    print()
+    if tel == 'None':
+        sql = sql
+    else:
+        sql = sql + 'and tel=' + to_standard(tel)
+    if id == 'None':
+        sql = sql
+    else:
+        sql = sql + 'and proto_id=' + str(id)
+    if date == 'None':
+        sql = sql
+    else:
+        sql = sql + 'and CONVERT(varchar(max),create_time,23)' + to_standard(date)
+    if batches == 'None':
+        sql = sql
+    else:
+        sql = sql + 'and batches=' + str(batches)
+    if status == 'None':
+        sql = sql
+    else:
+        sql = sql + 'and status=' + str(status)
+    sql = sql + ' order by id asc'
+    print(sql)
+    cur.execute(sql)
+    u = cur.fetchall()
+    conn.close()
+    return render_template('his.html', u=u)
 
 
 @app.route("/logout")

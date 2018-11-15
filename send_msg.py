@@ -2,10 +2,11 @@ from urllib import request
 # from urllib import parse
 import ssl
 import json
+import sys_msg
 
 
 def send_msg(content, mobile):
-    d = sys_util.get_msg_config("config/msgConfig.config")
+    d = sys_msg.get_msg_config("config/msgConfig.config")
     content = content
     mobile = mobile
     headers = {

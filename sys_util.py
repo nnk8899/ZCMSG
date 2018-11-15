@@ -26,5 +26,4 @@ def get_msg_config(filename):
 
 if __name__ == '__main__':
     c = get_sql_config("config/SQLConfig.config")
-    d = get_msg_config("config/msgConfig.config")
-    print (d[0])
+    print (c[0])

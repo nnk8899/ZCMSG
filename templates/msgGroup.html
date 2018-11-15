@@ -10,7 +10,7 @@
 <body>
 {% from "_field.html" import render_field %}
 {% import 'bootstrap/wtf.html' as wtf %}
-
+<h1>当前批次：{{ curr_batches }}</h1>
 <form action="" method="post" enctype="multipart/form-data">
   <p>{{ render_field(form.file) }}</p>
     <p>{{ render_field(form.proto_name) }}</p>

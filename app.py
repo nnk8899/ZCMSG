@@ -17,6 +17,7 @@ import sys_util
 import json
 import collections
 import time
+import send_msg
 
 
 class addForm(FlaskForm):
@@ -36,7 +37,7 @@ class editForm(FlaskForm):
 
 
 class excelForm(FlaskForm):
-    file = FileField('上传excel文件', validators=[FileRequired(), FileAllowed(['csv'], 'Excel ONLY!')])
+    file = FileField('上传excel文件', validators=[FileRequired(), FileAllowed(['csv','CSV'], 'Excel ONLY!')])
     proto_name = SelectField(u'选择模板', coerce=int, validators=[DataRequired(message=u"模板名称不能为空")])
     excel_submit = SubmitField(u'立即发送')
 
@@ -187,6 +188,17 @@ def msgGroup():
     cur.execute(sql)
     l = cur.fetchall()
     conn.close()
+    #计算正在添加的文件的当日批次
+    conn0 = link_sql()
+    cur0 = conn0.cursor()
+    sql0 = "select max(batches) from [dbo].[upload_details] where CONVERT(varchar,create_time,112)=CONVERT(varchar,GETDATE(),112)"
+    cur0.execute(sql0)
+    b = cur0.fetchall()
+    conn0.close()
+    if b[0][0] is not None:
+        curr_batches = b[0][0] + 1
+    else:
+        curr_batches = 1
     form = excelForm()
     form.proto_name.choices = [(i[0],i[1]) for i in l]
     if request.method == 'POST':
@@ -195,31 +207,37 @@ def msgGroup():
         form.file.data.save('D:/msg_box/' + filename)
         conn1 = link_sql()
         cur1 = conn1.cursor()
-        sql1 = "select content from [dbo].[prototype] where id=" + to_standard(form.proto_name.data)
+        sql1 = "select content from [dbo].[prototype] where id=" + str(form.proto_name.data)
         cur1.execute(sql1)
         k = cur1.fetchall()
         conn1.close()
         #计算模板中的占位符个数
-        proto_var_num = collections.Counter(k[0][0]).['$']/2
+        proto_var_num = int((collections.Counter(k[0][0])['$'])/2)
+        proto_text = k[0][0]
         #pandas读取上传的文件
         time.sleep(5)
         df = pd.read_csv('D://msg_box/'+filename, encoding='gbk', header=None)
         #判断上传的文件中的变量个数是否等于模板中占位符个数
         if (df.shape[1]-1) == proto_var_num:
-            '''
-            执行发送短信操作,并返回响应码
-            '''
-            '''
-            自动生成批次：
-                查询当日所有记录
-                    if 记录存在:
-                        set 当前批次值 = 当日记录中批次值的最大值+1 
-                    else:
-                        set 当前批次值 = 1
-            '''
-            '''
-            向数据库表插值
-            '''
+            #遍历dataframe，替换模板中占位符并发送短信
+            for index,row in df.iterrows():
+                curr_proto_text = proto_text
+                for i in range(1, proto_var_num+1):
+                    old = '$' + str(i) + '$'
+                    curr_proto_text = curr_proto_text.replace(old, str(row[i]))
+                status = send_msg.send_msg(content=curr_proto_text, mobile=str(row[0]))
+                #向数据库中插值
+                conn11 = link_sql()
+                cur11 = conn11.cursor()
+                for j in range(1, proto_var_num + 1):
+                    ss = ss + ',field' + str(j)
+                ss = ss + ') values (' +  to_standard(row[0]) + ',' + str(form.proto_name.data) + ',' + str(curr_batches) + ',' + str(status)
+                for j in range(1, proto_var_num + 1):
+                    ss = ss + ',' + to_standard(row[j])
+                ss = ss + ')'
+                cur11.execute(ss)
+                conn11.close()
+
             '''
             flash('已发送完毕！请到XXX处查询发送结果！')
             '''
@@ -231,7 +249,7 @@ def msgGroup():
 
 
         return redirect('/prototypeEditor')
-    return render_template('msgGroup.html',form=form)
+    return render_template('msgGroup.html', form=form, curr_batches=curr_batches)
 
 
 @app.route("/logout")

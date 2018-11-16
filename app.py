@@ -237,6 +237,7 @@ def msgGroup():
                 for i in range(1, proto_var_num+1):
                     old = '{' + str(i) + '}'
                     curr_proto_text = curr_proto_text.replace(old, str(row[i]))
+                print(curr_proto_text)
                 status = send_msg.send_msg(content=curr_proto_text, mobile=str(int(row[0])))
                 #向数据库中插值
                 conn11 = link_sql()
@@ -255,6 +256,7 @@ def msgGroup():
             print("发送成功")
             return redirect('/history')
         else:
+            print("模板不匹配！")
             return redirect('/msgGroup')
     return render_template('msgGroup.html', form=form, curr_batches=curr_batches)
 
@@ -268,7 +270,7 @@ def history():
     l = cur.fetchall()
     conn.close()
     tuple = (0, '不选择')
-    l = l + [tuple]
+    l = [tuple] + l
     form = historyForm()
     form.his_proto_id.choices = [(i[0], i[1]) for i in l]
     #print(type(form.his_proto_id.choices[0]))
@@ -319,12 +321,17 @@ def his(tel, id, date, batches, status):
         sql = sql
     else:
         sql = sql + 'and status=' + str(status)
-    sql = sql + ' order by id asc'
+    sql = sql + ' order by id desc'
     print(sql)
     cur.execute(sql)
     u = cur.fetchall()
     conn.close()
     return render_template('his.html', u=u)
+
+
+@app.route("/content")
+def content():
+    return render_template('content.html')
 
 
 @app.route("/logout")
